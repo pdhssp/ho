@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./resources/template/pdhs_template_1.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        <h:form >
+            <p:growl autoUpdate="true" />
+            <p:panel header="#{labels.finance}" >
+
+                <p:panelGrid columns="2">
+                    <h:outputLabel value="#{labels.Institution}" >
+                    </h:outputLabel>
+                    <h:outputLabel value="#{sessionController.loggedUser.webUserPerson.institution.name}" >
+                    </h:outputLabel>
+
+                    <h:outputLabel value="#{postLabels.fromFinance}" >
+                    </h:outputLabel>
+                    <p:calendar value="#{expenseController.fromDate}" pattern="dd MMMM yyyy" />
+
+                    <h:outputLabel value="#{postLabels.toFinance}" >
+                    </h:outputLabel>
+                    <p:calendar value="#{expenseController.toDate}" pattern="dd MMMM yyyy" />
+
+                    <h:outputLabel value="#{postLabels.expenseCategory}" >
+                    </h:outputLabel>
+                    <p:selectOneListbox id="lstCat" value="#{expenseController.category}" converter="#{expenseControllerConverter}" >
+                        <f:selectItems value="#{financialFindingCategoryController.lstItems}" var="catg" itemValue="#{catg}" itemLabel="#{catg.name}"/>
+                    </p:selectOneListbox>                      
+
+                    <h:outputLabel value="#{postLabels.cost}" >
+                    </h:outputLabel>
+                    <h:inputText value="#{expenseController.value}"/>
+
+                    <h:outputLabel value="#{postLabels.amount}" >
+                    </h:outputLabel>
+                    <h:inputText value="#{expenseController.amount}"/>                    
+
+                    <h:outputLabel value="" >
+                    </h:outputLabel>                    
+                    <h:commandButton value="#{labels.save}" action="#{expenseController.addDirectly}" />
+                </p:panelGrid>
+            </p:panel>
+
+
+        </h:form>        
+
+
+
+    </ui:define>
+
+</ui:composition>
