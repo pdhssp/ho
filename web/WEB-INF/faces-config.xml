@@ -24,7 +24,11 @@
         <resource-bundle>
             <base-name>/PostLabels</base-name>
             <var>postLabels</var>
-        </resource-bundle>        
+        </resource-bundle>  
+        <resource-bundle>
+            <base-name>/MsLabels</base-name>
+            <var>msLabels</var>
+        </resource-bundle>               
     </application>
     
     

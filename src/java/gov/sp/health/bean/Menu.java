@@ -37,7 +37,20 @@ public class Menu implements Serializable {
     @ManagedProperty(value = "#{messageProvider}")
     private MessageProvider messageProvider;
     MenuModel model;
+    MenuModel msModel;
     String temIx = "";
+
+    public MenuModel getMsModel() {
+        msModel = new DefaultMenuModel();
+        if (sessionController.privilege.isMsView()) {
+            msModel.addSubmenu(medicalSubmenu());
+        }
+        return msModel;
+    }
+
+    public void setMsModel(MenuModel msModel) {
+        this.msModel = msModel;
+    }
 
     public MessageProvider getMessageProvider() {
         return messageProvider;
@@ -372,12 +385,12 @@ public class Menu implements Serializable {
 
         submenu = new Submenu();
         submenu.setLabel(getLabel("post"));
-        
+
         item = new MenuItem();
         item.setValue(getLabel("postIndex"));
         item.setUrl("post_index.xhtml");
-        submenu.getChildren().add(item);        
-        
+        submenu.getChildren().add(item);
+
         item = new MenuItem();
         item.setValue(getLabel("newLetter"));
         item.setUrl("post_new_letter.xhtml");
@@ -664,10 +677,44 @@ public class Menu implements Serializable {
     }
 
     private Submenu medicalSubmenu() {
+
+
         Submenu submenu;
 
         MenuItem item;
 
+        /**
+         *
+         * Edit Generic Names Stock Referance No (VMP) , Category,
+         * Complementary/Regular, Where House No, Level No, Suppliers Item
+         * Master Item Category (Pharmaceuticals, Laboratory, Surgical) Item
+         * Subcategory (Ex. Infection, CVS, Consumables, Non Consumables)
+         * Intitutions Institution Hirachy Item Unit
+         *
+         *
+         * Good Receive MDS Receive Medical Gases Other Good Receive (Supplies
+         * like FHB, Epid Unit, Donations, Anti Leprasy, Transfer) ? Advice Note
+         * Receive Return Local Purchase Reprint Good Receive Cancell Good
+         * Receive	         *
+         * Item Issue Issue ? Advice Note Issue Issue to Quality test Cancel
+         * Receive Return Reprint
+         *
+         * Quality Failure Issue Receive Return Consolidate Return (SPC, MSD)
+         * Destroy Circulars
+         *
+         * Reports Stock Report - Item Vice - Region Stock Report - VMP(SR) Vice
+         * - Region Stock Report - Category Vice Items - Region Stock Report -
+         * Item Vice - Institution Stock Report -          *
+         * Quality Failure Report - Region Quality Failure Report - Institution
+         * Manufacturer-vice Quality Failure Supplier-vice Quality Failure
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         */
         submenu = new Submenu();
         submenu.setLabel(getLabel("msd"));
 
@@ -683,8 +730,14 @@ public class Menu implements Serializable {
         medicinesSubmenu.getChildren().add(item);
 
         item = new MenuItem();
-        item.setValue(getLabel("ItemCategories"));
+        item.setValue(getLabel("itemCategories"));
         item.setUrl("ms_item_category.xhtml");
+        medicinesSubmenu.getChildren().add(item);
+
+
+        item = new MenuItem();
+        item.setValue(getLabel("itemSubCategories"));
+        item.setUrl("ms_item_sub_category.xhtml");
         medicinesSubmenu.getChildren().add(item);
 
         item = new MenuItem();
@@ -693,8 +746,8 @@ public class Menu implements Serializable {
         medicinesSubmenu.getChildren().add(item);
 
         item = new MenuItem();
-        item.setValue(getLabel("tradeNames"));
-        item.setUrl("ms_atm.xhtml");
+        item.setValue(getLabel("VMPNames"));
+        item.setUrl("ms_vmp.xhtml");
         medicinesSubmenu.getChildren().add(item);
 
         item = new MenuItem();
@@ -711,7 +764,9 @@ public class Menu implements Serializable {
 
 
         Submenu insSubmenu = new Submenu();
-        insSubmenu.setLabel(getLabel("institutions"));
+        item.setValue(getLabel("Institutions"));
+        item.setUrl("institutions.xhtml");
+        insSubmenu.getChildren().add(item);
 
         item = new MenuItem();
         item.setValue(getLabel("Units"));

@@ -32,7 +32,7 @@
                                 <p:row >
                                     <p:column styleClass="pdTopAlign">
                                         <h:outputLabel value="Item" />
-                                        <h:selectOneListbox id="lstItem" value="#{purchaseBillController.billItemEntry.billItem.itemUnit.item}" styleClass="pdListBox" size="5">
+                                        <h:selectOneListbox id="lstItem" value="#{purchaseBillController.billItemEntry.billItem.itemUnit.item}" size="1" >
                                             <f:selectItems value="#{purchaseBillController.items}" var="item" itemValue="#{item}" itemLabel="#{item.name}">
                                             </f:selectItems>
                                             <f:ajax execute="lstItem" render="txtTem"/>

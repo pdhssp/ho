@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package gov.sp.health.bean;
 
 import gov.sp.health.facade.WebUserFacade;
@@ -27,6 +23,7 @@ public class MessageProvider implements Serializable {
     @ManagedProperty(value = "#{sessionController}")
     SessionController sessionController;
     private ResourceBundle bundle;
+    private ResourceBundle msBundle;
 
     public SessionController getSessionController() {
         return sessionController;
@@ -40,12 +37,6 @@ public class MessageProvider implements Serializable {
         Locale myLocale;
         myLocale = new Locale("si", "LK");
         try {
-            System.out.println("Traying to get resource bundle in reset bundle");
-//            System.out.println("defLocale is " + getSessionController().toString());
-//            System.out.println("Session Controller is " + getSessionController().getDefLocale());
-//
-//            System.out.println("Session Controller is " + getSessionController().getDefLocale());
-//            System.out.println("defLocale is " + getSessionController().toString());
             if (getSessionController() == null) {
                 System.out.println("Session controller is NULL");
                 myLocale = new Locale("en");
@@ -57,19 +48,15 @@ public class MessageProvider implements Serializable {
                 myLocale = new Locale("en");
             }
             System.out.println(myLocale.toString());
-//            FacesContext.getCurrentInstance().getViewRoot().setLocale(myLocale);
-            System.out.println("1");
             FacesContext context = FacesContext.getCurrentInstance();
-            System.out.println("2");
             context.getViewRoot().setLocale(myLocale);
-            System.out.println("3");
             bundle = context.getApplication().getResourceBundle(context, "labels");
-            System.out.println("4");
+            msBundle = context.getApplication().getResourceBundle(context, "msLabels");
+            
             return bundle;
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             bundle = context.getApplication().getResourceBundle(context, "labels");
-            System.out.println("Error at line 54 is " + e.getMessage());
             return bundle;
         }
     }
@@ -82,41 +69,21 @@ public class MessageProvider implements Serializable {
         return bundle;
     }
 
-//    public ResourceBundle getBundle() {
-//        Locale myLocale;
-//        myLocale = new Locale("si", "LK");
-//        try {
-//            System.out.println("Traying to get resource bundle");
-//            System.out.println("defLocale is " + getSessionController().toString());
-//            System.out.println("Session Controller is " + getSessionController().getDefLocale());
-//
-//            if (bundle == null || !bundle.getLocale().equals(new Locale(getSessionController().getDefLocale()))) {
-//                System.out.println("Session Controller is " + getSessionController().getDefLocale());
-//                System.out.println("defLocale is " + getSessionController().toString());
-//                if (getSessionController().getDefLocale().equals("si_LK")) {
-//                    myLocale = new Locale("si", "LK");
-//                } else if (getSessionController().getDefLocale().equals("ta_LK")) {
-//                    myLocale = new Locale("ta", "LK");
-//                } else {
-//                    myLocale = new Locale("en");;
-//                }
-//                FacesContext.getCurrentInstance().getViewRoot().setLocale(myLocale);
-//                FacesContext context = FacesContext.getCurrentInstance();
-//                bundle = context.getApplication().getResourceBundle(context, "labels");
-//                return bundle;
-//            } else {
-//                System.out.println("Bundle is NOT null");
-//                return bundle;
-//            }
-//        } catch (Exception e) {
-//            FacesContext context = FacesContext.getCurrentInstance();
-//            bundle = context.getApplication().getResourceBundle(context, "labels");
-//            System.out.println("Error at line 54 is " + e.getMessage());
-//            return bundle;
-//        }
-//    }
-    public String getValue(String key) {
+    /**
+     *
+     * @param s
+     * @return
+     */
+    public static String splitCamelCase(String s) {
+        return s.replaceAll(
+                String.format("%s|%s|%s",
+                "(?<=[A-Z])(?=[A-Z][a-z])",
+                "(?<=[^A-Z])(?=[A-Z])",
+                "(?<=[A-Za-z])(?=[^A-Za-z])"),
+                " ");
+    }
 
+    public String getValue(String key) {
         Locale myLocale;
         myLocale = new Locale("si", "LK");
         if (getSessionController() == null) {
@@ -129,18 +96,14 @@ public class MessageProvider implements Serializable {
         } else {
             myLocale = new Locale("en");
         }
-
-
-
         if (!getBundle().getLocale().equals(myLocale)) {
             bundle = null;
         }
-        
-        String result = null;
+        String result = splitCamelCase(key);
         try {
             result = getBundle().getString(key);
         } catch (MissingResourceException e) {
-            result = "???" + key + "??? not found";
+            System.out.println("Error in Message Provider. getValue()\n" + e.getMessage());
         }
         return result;
     }
