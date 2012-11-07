@@ -40,7 +40,7 @@ import org.primefaces.model.UploadedFile;
  */
 @ManagedBean
 @RequestScoped
-public class PharmaceuticalExcelManager  implements Serializable {
+public class PharmaceuticalExcelManager implements Serializable {
 
     /**
      *
@@ -75,6 +75,9 @@ public class PharmaceuticalExcelManager  implements Serializable {
      *
      */
     int itemCategoryCol;
+    int whareHouseCol;
+    int srNoCol;
+    int levelCol;
     int vtmCol;
     int atmCol;
     int vmpCol;
@@ -115,8 +118,37 @@ public class PharmaceuticalExcelManager  implements Serializable {
         this.file = file;
     }
 
+    public int getWhareHouseCol() {
+        return whareHouseCol;
+    }
+
+    public void setWhareHouseCol(int whareHouseCol) {
+        this.whareHouseCol = whareHouseCol;
+    }
+
+    public int getSrNoCol() {
+        return srNoCol;
+    }
+
+    public void setSrNoCol(int srNoCol) {
+        this.srNoCol = srNoCol;
+    }
+
+    public int getLevelCol() {
+        return levelCol;
+    }
+
+    public void setLevelCol(int levelCol) {
+        this.levelCol = levelCol;
+    }
+
     public String importToExcel() {
         String temStr;
+        String temStr1;
+        String temStr2;
+        String temStr3;
+        String temStr4;
+
         PharmaceuticalItemCategory temCat;
         Vtm temVtm;
         Atm temAtm;
@@ -125,6 +157,7 @@ public class PharmaceuticalExcelManager  implements Serializable {
         Ampp temAmpp;
         Vmpp temVmpp;
         VtmInAmp temVtmInAmp;
+        Unit unit;
         IssueUnit temIssueUnit;
         StrengthUnit temStrengthUnit;
         PackUnit temPackUnit;
@@ -173,96 +206,8 @@ public class PharmaceuticalExcelManager  implements Serializable {
                 } else {
                     temCat = null;
                 }
-                //Vtm
-                cell = sheet.getCell(vtmCol, i);
-                temStr = cell.getContents();
-                if (!temStr.equals("")) {
-                    temVtm = vtmFacade.findFirstBySQL("SELECT c FROM Vtm c Where c.name = '" + temStr + "' AND c.retired=false");
-                    if (temVtm == null) {
-                        temVtm = new Vtm();
-                        temVtm.setName(temStr);
-                        vtmFacade.create(temVtm);
-                    } else {
-                        temVtm = null;
-                    }
-                } else {
-                    temVtm = null;
-                }
-                //Atm
-                cell = sheet.getCell(atmCol, i);
-                temStr = cell.getContents();
-                if (!temStr.equals("")) {
-                    temAtm = atmFacade.findFirstBySQL("SELECT c FROM Atm c Where c.name = '" + temStr + "' AND c.retired=false");
-                    if (temAtm == null) {
-                        temAtm = new Atm();
-                        temAtm.setName(temStr);
-                        atmFacade.create(temAtm);
-                    } else {
-                        temAtm = null;
-                    }
-                } else {
-                    temAtm = null;
-                }
-                //Vmp
-                cell = sheet.getCell(vmpCol, i);
-                temStr = cell.getContents();
-                if (!temStr.equals("")) {
-                    temVmp = vmpFacade.findFirstBySQL("SELECT c FROM Vmp c Where c.name = '" + temStr + "' AND c.retired=false");
-                    if (temVmp == null) {
-                        temVmp = new Vmp();
-                        temVmp.setName(temStr);
-                        vmpFacade.create(temVmp);
-                    } else {
-                        temVmp = null;
-                    }
-                } else {
-                    temVmp = null;
-                }
-                //Amp
-                cell = sheet.getCell(ampCol, i);
-                temStr = cell.getContents();
-                if (!temStr.equals("")) {
-                    temAmp = ampFacade.findFirstBySQL("SELECT c FROM Amp c Where c.name = '" + temStr + "' AND c.retired=false");
-                    if (temAmp == null) {
-                        temAmp = new Amp();
-                        temAmp.setName(temStr);
-                        ampFacade.create(temAmp);
-                    } else {
-                        temAmp = null;
-                    }
-                } else {
-                    temAmp = null;
-                }
-                //Ampp
-                cell = sheet.getCell(amppCol, i);
-                temStr = cell.getContents();
-                if (!temStr.equals("")) {
-                    temAmpp = amppFacade.findFirstBySQL("SELECT c FROM Ampp c Where c.name = '" + temStr + "' AND c.retired=false");
-                    if (temAmpp == null) {
-                        temAmpp = new Ampp();
-                        temAmpp.setName(temStr);
-                        amppFacade.create(temAmpp);
-                    } else {
-                        temAmpp = null;
-                    }
-                } else {
-                    temAmpp = null;
-                }
-                //Vmpp
-                cell = sheet.getCell(vmppCol, i);
-                temStr = cell.getContents();
-                if (!temStr.equals("")) {
-                    temVmpp = vmppFacade.findFirstBySQL("SELECT c FROM Vmpp c Where c.name = '" + temStr + "' AND c.retired=false");
-                    if (temVmpp == null) {
-                        temVmpp = new Vmpp();
-                        temVmpp.setName(temStr);
-                        vmppFacade.create(temVmpp);
-                    } else {
-                        temVmpp = null;
-                    }
-                } else {
-                    temVmpp = null;
-                }
+
+
                 //Strength Unit
                 cell = sheet.getCell(strengthUnitCol, i);
                 temStr = cell.getContents();
@@ -333,6 +278,120 @@ public class PharmaceuticalExcelManager  implements Serializable {
                     issueUnitsPerPack = 0.0;
                 }
                 //
+
+
+                //Vtm
+                cell = sheet.getCell(vtmCol, i);
+                temStr = cell.getContents();
+
+
+                if (!temStr.equals("")) {
+                    temVtm = vtmFacade.findFirstBySQL("SELECT c FROM Vtm c Where c.name = '" + temStr + "' AND c.retired=false");
+                    if (temVtm == null) {
+                        temVtm = new Vtm();
+                        temVtm.setName(temStr);
+                        vtmFacade.create(temVtm);
+                    } else {
+                        temVtm = null;
+                    }
+                } else {
+                    temVtm = null;
+                }
+                //Atm
+                cell = sheet.getCell(atmCol, i);
+                temStr = cell.getContents();
+                if (!temStr.equals("")) {
+                    temAtm = atmFacade.findFirstBySQL("SELECT c FROM Atm c Where c.name = '" + temStr + "' AND c.retired=false");
+                    if (temAtm == null) {
+                        temAtm = new Atm();
+                        temAtm.setName(temStr);
+                        atmFacade.create(temAtm);
+                    } else {
+                        temAtm = null;
+                    }
+                } else {
+                    temAtm = null;
+                }
+                //Vmp
+
+                cell = sheet.getCell(srNoCol, i);
+                temStr1 = cell.getContents();
+                cell = sheet.getCell(levelCol, i);
+                temStr2 = cell.getContents();
+                cell = sheet.getCell(whareHouseCol, i);
+                temStr4 = cell.getContents();
+
+                cell = sheet.getCell(vmpCol, i);
+                temStr = cell.getContents();
+                if (!temStr.equals("")) {
+                    temVmp = vmpFacade.findFirstBySQL("SELECT c FROM Vmp c Where c.name = '" + temStr + "' AND c.retired=false");
+                    if (temVmp == null) {
+                        temVmp = new Vmp();
+                        temVmp.setName(temStr);
+                        temVmp.setCode(temStr1);
+                        temVmp.setLevelNo(Integer.valueOf(temStr2));
+                        temVmp.setCategory(temCat);
+                        temVmp.setWhNo(temStr4);
+                        temVmp.setItemUnit(temStrengthUnit);
+                        temVmp.setItemQuantity(strengthOfIssueUnit);
+
+                        vmpFacade.create(temVmp);
+                    } else {
+                        temVmp = null;
+                    }
+                } else {
+                    temVmp = null;
+                }
+                //Amp
+                cell = sheet.getCell(ampCol, i);
+                temStr = cell.getContents();
+
+                if (!temStr.equals("")) {
+                    temAmp = ampFacade.findFirstBySQL("SELECT c FROM Amp c Where c.name = '" + temStr + "' AND c.retired=false");
+                    if (temAmp == null) {
+                        temAmp = new Amp();
+                        temAmp.setName(temStr);
+                        temAmp.setItemUnit(temStrengthUnit);
+                        temAmp.setItemQuantity(strengthOfIssueUnit);
+                        getAmpFacade().create(temAmp);
+                    } else {
+                        temAmp = null;
+                    }
+                } else {
+                    temAmp = null;
+                }
+                //Ampp
+                cell = sheet.getCell(amppCol, i);
+                temStr = cell.getContents();
+                if (!temStr.equals("")) {
+                    temAmpp = amppFacade.findFirstBySQL("SELECT c FROM Ampp c Where c.name = '" + temStr + "' AND c.retired=false");
+                    if (temAmpp == null) {
+                        temAmpp = new Ampp();
+                        temAmpp.setName(temStr);
+                        amppFacade.create(temAmpp);
+                    } else {
+                        temAmpp = null;
+                    }
+                } else {
+                    temAmpp = null;
+                }
+                //Vmpp
+                cell = sheet.getCell(vmppCol, i);
+                temStr = cell.getContents();
+                if (!temStr.equals("")) {
+                    temVmpp = vmppFacade.findFirstBySQL("SELECT c FROM Vmpp c Where c.name = '" + temStr + "' AND c.retired=false");
+                    if (temVmpp == null) {
+                        temVmpp = new Vmpp();
+                        temVmpp.setName(temStr);
+                        vmppFacade.create(temVmpp);
+                    } else {
+                        temVmpp = null;
+                    }
+                } else {
+                    temVmpp = null;
+                }
+
+
                 //
                 //
                 if (temAtm != null) {

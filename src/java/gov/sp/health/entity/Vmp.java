@@ -15,5 +15,24 @@ import javax.persistence.Inheritance;
 @Entity
 @Inheritance
 public class Vmp extends PharmaceuticalItem implements Serializable {
+    Integer LevelNo;
+    String whNo;
 
+    public Integer getLevelNo() {
+        return LevelNo;
+    }
+
+    public void setLevelNo(Integer LevelNo) {
+        this.LevelNo = LevelNo;
+    }
+
+    public String getWhNo() {
+        return whNo;
+    }
+
+    public void setWhNo(String whNo) {
+        this.whNo = whNo;
+    }
+    
+    
 }

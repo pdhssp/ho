@@ -195,9 +195,9 @@ public class Menu implements Serializable {
         msModel = new DefaultMenuModel();
         if (sessionController.privilege.isMsView()) {
             msModel.addSubmenu(medicalSubmenu());
-        }        
-        
-        
+        }
+
+
         model = new DefaultMenuModel();
         MenuItem item;
         item = new MenuItem();
@@ -693,15 +693,15 @@ public class Menu implements Serializable {
          */
         submenu = new Submenu();
         submenu.setLabel(getLabel("msd"));
-        
+
         item = new MenuItem();
         item.setValue(getLabel("medicalSuppliesHome"));
         item.setUrl("ms_index.xhtml");
         submenu.getChildren().add(item);
-        
+
         Submenu grSubmenu = new Submenu();
         grSubmenu.setLabel(getLabel("goodReceive"));
-        
+
         item = new MenuItem();
         item.setValue(getLabel("msdReceive"));
         item.setUrl("ms_good_receive_msd");
@@ -838,10 +838,18 @@ public class Menu implements Serializable {
         item.setValue(getLabel("consolidateEstimate"));
         item.setUrl("ms_estimate_distroy");
         estimateSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue("Suplimentary Estimate Creation");
+        item.setUrl("ms_estimate_distroy");
+        estimateSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue("Supplimentary Estimate Autherization");
+        item.setUrl("ms_estimate_distroy");
+        estimateSubmenu.getChildren().add(item);
+
         submenu.getChildren().add(estimateSubmenu);
 
-        
-        
+
         Submenu editSubmenu = new Submenu();
         editSubmenu.setLabel(getLabel("edit"));
 

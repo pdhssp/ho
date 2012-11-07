@@ -40,13 +40,54 @@ public class Item implements Serializable {
     ItemCategory category;
     
     @ManyToOne
+    Category itemClass;
+    
+    Double itemQuantity;
+    
+    @ManyToOne
     MeasurementUnit bulkUnit;
     
     @ManyToOne
     MeasurementUnit looseUnit;
 
+    @ManyToOne
+    MeasurementUnit itemUnit;
+    
     double looseUnitsPerBulkUnit;
 
+    public Double getItemQuantity() {
+        return itemQuantity;
+    }
+
+    public void setItemQuantity(Double itemQuantity) {
+        this.itemQuantity = itemQuantity;
+    }
+
+
+    
+    
+    
+    public Category getItemClass() {
+        return itemClass;
+    }
+
+    public void setItemClass(Category itemClass) {
+        this.itemClass = itemClass;
+    }
+
+    public MeasurementUnit getItemUnit() {
+        return itemUnit;
+    }
+
+    public void setItemUnit(MeasurementUnit itemUnit) {
+        this.itemUnit = itemUnit;
+    }
+
+
+    
+    
+    
+    
     public double getLooseUnitsPerBulkUnit() {
         return looseUnitsPerBulkUnit;
     }
