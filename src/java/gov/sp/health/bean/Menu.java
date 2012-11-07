@@ -41,10 +41,6 @@ public class Menu implements Serializable {
     String temIx = "";
 
     public MenuModel getMsModel() {
-        msModel = new DefaultMenuModel();
-        if (sessionController.privilege.isMsView()) {
-            msModel.addSubmenu(medicalSubmenu());
-        }
         return msModel;
     }
 
@@ -196,14 +192,14 @@ public class Menu implements Serializable {
     }
 
     public void createMenu() {
+        msModel = new DefaultMenuModel();
+        if (sessionController.privilege.isMsView()) {
+            msModel.addSubmenu(medicalSubmenu());
+        }        
+        
+        
         model = new DefaultMenuModel();
-//        model.addSubmenu(cadreSubmenu());
-
-
         MenuItem item;
-
-
-
         item = new MenuItem();
         item.setValue(getLabel("home"));
         item.setUrl("index.xhtml");
@@ -226,19 +222,7 @@ public class Menu implements Serializable {
         if (sessionController.privilege.isBmeView()) {
             model.addSubmenu(biomedSubmenu());
         }
-//        if (sessionController.privilege.isVehicleView()) model.addSubmenu(transportSubmenu());
-//
-//        if (sessionController.privilege.isDemographyView()) {
-//            model.addSubmenu(demographySubmenu());
-//        }
 
-//        if (sessionController.privilege.isCaderView()) {
-//            model.addSubmenu(humanSubmenu());
-//        }
-
-//        if (sessionController.privilege.isMsView()) {
-//            model.addSubmenu(medicalSubmenu());
-//        }
         if (sessionController.privilege.isManageAccounts()) {
             model.addSubmenu(adminSubmenu());
         }
@@ -695,84 +679,217 @@ public class Menu implements Serializable {
          * Good Receive MDS Receive Medical Gases Other Good Receive (Supplies
          * like FHB, Epid Unit, Donations, Anti Leprasy, Transfer) ? Advice Note
          * Receive Return Local Purchase Reprint Good Receive Cancell Good
-         * Receive	         *
-         * Item Issue Issue ? Advice Note Issue Issue to Quality test Cancel
-         * Receive Return Reprint
+         * Receive	* Item Issue Issue ? Advice Note Issue Issue to Quality test
+         * Cancel Receive Return Reprint
          *
          * Quality Failure Issue Receive Return Consolidate Return (SPC, MSD)
          * Destroy Circulars
          *
          * Reports Stock Report - Item Vice - Region Stock Report - VMP(SR) Vice
          * - Region Stock Report - Category Vice Items - Region Stock Report -
-         * Item Vice - Institution Stock Report -          *
-         * Quality Failure Report - Region Quality Failure Report - Institution
-         * Manufacturer-vice Quality Failure Supplier-vice Quality Failure
-         *
-         *
-         *
-         *
-         *
-         *
-         *
+         * Item Vice - Institution Stock Report - * Quality Failure Report -
+         * Region Quality Failure Report - Institution Manufacturer-vice Quality
+         * Failure Supplier-vice Quality Failure
          */
         submenu = new Submenu();
         submenu.setLabel(getLabel("msd"));
+        
+        item = new MenuItem();
+        item.setValue(getLabel("medicalSuppliesHome"));
+        item.setUrl("ms_index.xhtml");
+        submenu.getChildren().add(item);
+        
+        Submenu grSubmenu = new Submenu();
+        grSubmenu.setLabel(getLabel("goodReceive"));
+        
+        item = new MenuItem();
+        item.setValue(getLabel("msdReceive"));
+        item.setUrl("ms_good_receive_msd");
+        grSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("otherGoodReceive"));
+        item.setUrl("ms_good_receive_other");
+        grSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("adviceNoteReceive"));
+        item.setUrl("ms_good_receive_advice_note");
+        grSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("laocalPurchase"));
+        item.setUrl("ms_good_receive_local_purchase");
+        grSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("reprint"));
+        item.setUrl("ms_good_receive_reprint");
+        grSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("cancel"));
+        item.setUrl("ms_good_receive_cancel");
+        grSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("return"));
+        item.setUrl("ms_good_receive_return");
+        grSubmenu.getChildren().add(item);
+        submenu.getChildren().add(grSubmenu);
 
+        Submenu issueSubmenu = new Submenu();
+        issueSubmenu.setLabel(getLabel("issue"));
+        item = new MenuItem();
+        item.setValue(getLabel("issue"));
+        item.setUrl("ms_issue");
+        issueSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("adviceNoteIssue"));
+        item.setUrl("ms_issue_advice_note");
+        issueSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("reprint"));
+        item.setUrl("ms_issue_reprint");
+        issueSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("Cancel"));
+        item.setUrl("ms_issue_cancel");
+        issueSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("receiveReturn"));
+        item.setUrl("ms_issue_return");
+        issueSubmenu.getChildren().add(item);
+        submenu.getChildren().add(issueSubmenu);
+
+
+
+        Submenu qualityfailureSubmenu = new Submenu();
+        qualityfailureSubmenu.setLabel(getLabel("qualityfailure"));
+        item = new MenuItem();
+        item.setValue(getLabel("transfer"));
+        item.setUrl("ms_qualityfailure_transfer");
+        qualityfailureSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("receive"));
+        item.setUrl("ms_qualityfailure_transfer");
+        qualityfailureSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("consolidate"));
+        item.setUrl("ms_qualityfailure_consolidate");
+        qualityfailureSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("distroy"));
+        item.setUrl("ms_qualityfailure_distroy");
+        qualityfailureSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("circulars"));
+        item.setUrl("ms_qualityfailure_circulars");
+        qualityfailureSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("reprintTransfer"));
+        item.setUrl("ms_qualityfailure_reprint");
+        qualityfailureSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("reprintReceive"));
+        item.setUrl("ms_qualityfailure_reprint");
+        qualityfailureSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("cancelTransfer"));
+        item.setUrl("ms_qualityfailure_cancel");
+        qualityfailureSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("cancelReceive"));
+        item.setUrl("ms_qualityfailure_cancel");
+        qualityfailureSubmenu.getChildren().add(item);
+        submenu.getChildren().add(qualityfailureSubmenu);
+
+
+
+        Submenu reportSubmenu = new Submenu();
+        reportSubmenu.setLabel(getLabel("report"));
+        item = new MenuItem();
+        item.setValue(getLabel("stockReports"));
+        item.setUrl("ms_report_transfer");
+        reportSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("issueReports"));
+        item.setUrl("ms_report_transfer");
+        reportSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("receiveReports"));
+        item.setUrl("ms_report_consolidate");
+        reportSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("qualityFailureReports"));
+        item.setUrl("ms_report_distroy");
+        reportSubmenu.getChildren().add(item);
+        submenu.getChildren().add(reportSubmenu);
+
+        Submenu estimateSubmenu = new Submenu();
+        estimateSubmenu.setLabel(getLabel("estimate"));
+        item = new MenuItem();
+        item.setValue(getLabel("createEstimate"));
+        item.setUrl("ms_estimate_transfer");
+        estimateSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("forwardEstimate"));
+        item.setUrl("ms_estimate_transfer");
+        estimateSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("receiveEstimate"));
+        item.setUrl("ms_estimate_consolidate");
+        estimateSubmenu.getChildren().add(item);
+        item = new MenuItem();
+        item.setValue(getLabel("consolidateEstimate"));
+        item.setUrl("ms_estimate_distroy");
+        estimateSubmenu.getChildren().add(item);
+        submenu.getChildren().add(estimateSubmenu);
+
+        
+        
         Submenu editSubmenu = new Submenu();
         editSubmenu.setLabel(getLabel("edit"));
 
         Submenu medicinesSubmenu = new Submenu();
         medicinesSubmenu.setLabel(getLabel("medicines"));
-
         item = new MenuItem();
         item.setValue(getLabel("medicineGroups"));
         item.setUrl("ms_medicine_group.xhtml");
         medicinesSubmenu.getChildren().add(item);
-
         item = new MenuItem();
         item.setValue(getLabel("itemCategories"));
         item.setUrl("ms_item_category.xhtml");
         medicinesSubmenu.getChildren().add(item);
-
-
         item = new MenuItem();
         item.setValue(getLabel("itemSubCategories"));
         item.setUrl("ms_item_sub_category.xhtml");
         medicinesSubmenu.getChildren().add(item);
-
         item = new MenuItem();
         item.setValue(getLabel("genericNames"));
         item.setUrl("ms_vtm.xhtml");
         medicinesSubmenu.getChildren().add(item);
-
         item = new MenuItem();
         item.setValue(getLabel("VMPNames"));
         item.setUrl("ms_vmp.xhtml");
         medicinesSubmenu.getChildren().add(item);
-
         item = new MenuItem();
         item.setValue(getLabel("itemMaster"));
         item.setUrl("ms_amp.xhtml");
         medicinesSubmenu.getChildren().add(item);
-
         item = new MenuItem();
         item.setValue(getLabel("importFromExcel"));
         item.setUrl("ms_import_items.xhtml");
         medicinesSubmenu.getChildren().add(item);
-
         editSubmenu.getChildren().add(medicinesSubmenu);
 
 
         Submenu insSubmenu = new Submenu();
-        item.setValue(getLabel("Institutions"));
+        item.setValue(getLabel("institutions"));
         item.setUrl("institutions.xhtml");
         insSubmenu.getChildren().add(item);
-
+        item = new MenuItem();
+        item.setValue(getLabel("InstitutionHirachi"));
+        item.setUrl("inventory_unit.xhtml");
+        insSubmenu.getChildren().add(item);
         item = new MenuItem();
         item.setValue(getLabel("Units"));
         item.setUrl("inventory_unit.xhtml");
         insSubmenu.getChildren().add(item);
-
         item = new MenuItem();
         item.setValue(getLabel("Suppliers"));
         item.setUrl("inventory_supplier.xhtml");
@@ -793,46 +910,6 @@ public class Menu implements Serializable {
 
         submenu.getChildren().add(editSubmenu);
 
-
-        item = new MenuItem();
-        item.setValue(getLabel("msPurchase"));
-        item.setUrl("ms_purchase.xhtml");
-        submenu.getChildren().add(item);
-
-        item = new MenuItem();
-        item.setValue(getLabel("msReceive"));
-        item.setUrl("institutions.xhtml");
-        submenu.getChildren().add(item);
-
-        item = new MenuItem();
-        item.setValue(getLabel("msIssue"));
-        item.setUrl("designation_category.xhtml");
-        submenu.getChildren().add(item);
-
-        item = new MenuItem();
-        item.setValue(getLabel("msRequests"));
-        item.setUrl("designation_level.xhtml");
-        submenu.getChildren().add(item);
-
-        item = new MenuItem();
-        item.setValue(getLabel("msIssueRequests"));
-        item.setUrl("designation.xhtml");
-        submenu.getChildren().add(item);
-
-        item = new MenuItem();
-        item.setValue(getLabel("msReceiveRequests"));
-        item.setUrl("institution_designation.xhtml");
-        submenu.getChildren().add(item);
-
-        item = new MenuItem();
-        item.setValue(getLabel("msReceiveRequests"));
-        item.setUrl("cadre_positions.xhtml");
-        submenu.getChildren().add(item);
-
-        item = new MenuItem();
-        item.setValue(getLabel("msPrepareEstimates"));
-        item.setUrl("reports.xhtml");
-        submenu.getChildren().add(item);
 
         return submenu;
     }

@@ -11,10 +11,12 @@ package gov.sp.health.bean;
 import gov.sp.health.facade.VtmFacade;
 import gov.sp.health.entity.Vtm;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -30,39 +32,41 @@ import javax.faces.model.ListDataModel;
  */
 @ManagedBean
 @SessionScoped
-public final class VtmController  implements Serializable {
-
+public final class VtmController implements Serializable {
+    
+/**
+ *
+ * EJBs for facade
+ * 
+ */    
     @EJB
     private VtmFacade ejbFacade;
-    SessionController sessionController = new SessionController();
-    List<Vtm> lstItems;
+    /**
+     * Managed Properties
+     */
+    @ManagedProperty(value = "#{sessionController}")
+    SessionController sessionController;
+    /**
+     * Selected Vtm
+     */
     private Vtm current;
-    private DataModel<Vtm> items = null;
-    private int selectedItemIndex;
-    boolean selectControlDisable = false;
-    boolean modifyControlDisable = true;
+    /**
+     * All Vtms
+     */
+    private List<Vtm> items = null;
+   
     String selectText = "";
 
+    public void setItems(List<Vtm> items) {
+        this.items = items;
+    }
+
+    
     public VtmController() {
     }
 
-    public List<Vtm> getLstItems() {
-        return getFacade().findBySQL("Select d From Vtm d");
-    }
-
-    public void setLstItems(List<Vtm> lstItems) {
-        this.lstItems = lstItems;
-    }
-
-    public int getSelectedItemIndex() {
-        return selectedItemIndex;
-    }
-
-    public void setSelectedItemIndex(int selectedItemIndex) {
-        this.selectedItemIndex = selectedItemIndex;
-    }
-
-    public Vtm getCurrent() {
+    
+     public Vtm getCurrent() {
         if (current == null) {
             current = new Vtm();
         }
@@ -77,8 +81,15 @@ public final class VtmController  implements Serializable {
         return ejbFacade;
     }
 
-    public DataModel<Vtm> getItems() {
-        items = new ListDataModel(getFacade().findAll("name", true));
+    public List<Vtm> getItems() {
+        String temSql;
+        if (selectText.trim().equals("")) {
+            temSql = "select p from Vtm p where p.retired=false order by p.name";
+        } else {
+            temSql = "select p from Vtm p where p.retired=false and lower(p.name) like '%" + selectText.toLowerCase() + "%' order by p.name";
+        }
+        List<Vtm> temLstPer = getFacade().findBySQL(temSql);
+        items =temLstPer;
         return items;
     }
 
@@ -91,74 +102,26 @@ public final class VtmController  implements Serializable {
         return valueInt;
     }
 
-    public DataModel searchItems() {
-        recreateModel();
-        if (items == null) {
-            if (selectText.equals("")) {
-                items = new ListDataModel(getFacade().findAll("name", true));
-            } else {
-                items = new ListDataModel(getFacade().findAll("name", "%" + selectText + "%",
-                        true));
-                if (items.getRowCount() > 0) {
-                    items.setRowIndex(0);
-                    current = (Vtm) items.getRowData();
-                    Long temLong = current.getId();
-                    selectedItemIndex = intValue(temLong);
-                } else {
-                    current = null;
-                    selectedItemIndex = -1;
-                }
-            }
-        }
-        return items;
-
-    }
-
-    public Vtm searchItem(String itemName, boolean createNewIfNotPresent) {
-        Vtm searchedItem = null;
-        items = new ListDataModel(getFacade().findAll("name", itemName, true));
-        if (items.getRowCount() > 0) {
-            items.setRowIndex(0);
-            searchedItem = (Vtm) items.getRowData();
-        } else if (createNewIfNotPresent) {
-            searchedItem = new Vtm();
-            searchedItem.setName(itemName);
-            searchedItem.setCreatedAt(Calendar.getInstance().getTime());
-            searchedItem.setCreater(sessionController.loggedUser);
-            getFacade().create(searchedItem);
-        }
-        return searchedItem;
-    }
-
-    private void recreateModel() {
-        items = null;
-    }
-
-    public void prepareSelect() {
-        this.prepareModifyControlDisable();
-    }
-
-    public void prepareEdit() {
-        if (current != null) {
-            selectedItemIndex = intValue(current.getId());
-            this.prepareSelectControlDisable();
-        } else {
-            JsfUtil.addErrorMessage(new MessageProvider().getValue("nothingToEdit"));
-        }
-    }
 
     public void prepareAdd() {
-        selectedItemIndex = -1;
-        current = new Vtm();
-        this.prepareSelectControlDisable();
+        setCurrent(new Vtm());
+        
     }
 
     public void saveSelected() {
-        if (sessionController.getPrivilege().isMsEdit()==false){
+        if (sessionController.getPrivilege().isInventoryEdit()==false){
             JsfUtil.addErrorMessage("You are not autherized to make changes to any content");
             return;
         }            
-        if (selectedItemIndex > 0) {
+        if (current==null){
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        if (current.getName().trim().equals("")){
+            JsfUtil.addErrorMessage("Please enter a name to save");
+            return;
+        }
+        if (current.getId()!=null  && current.getId() !=0) {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedOldSuccessfully"));
         } else {
@@ -167,35 +130,12 @@ public final class VtmController  implements Serializable {
             getFacade().create(current);
             JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
         }
-        this.prepareSelect();
-        recreateModel();
         getItems();
         selectText = "";
-        selectedItemIndex = intValue(current.getId());
-    }
-
-    public void addDirectly() {
-        JsfUtil.addSuccessMessage("1");
-        try {
-
-            current.setCreatedAt(Calendar.getInstance().getTime());
-            current.setCreater(sessionController.loggedUser);
-
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(new MessageProvider().getValue("savedNewSuccessfully"));
-            current = new Vtm();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, "Error");
-        }
-
-    }
-
-    public void cancelSelect() {
-        this.prepareSelect();
     }
 
     public void delete() {
-        if (sessionController.getPrivilege().isMsDelete() ==false){
+        if (sessionController.getPrivilege().isInventoryDelete()==false){
             JsfUtil.addErrorMessage("You are not autherized to delete any content");
             return;
         }
@@ -208,28 +148,7 @@ public final class VtmController  implements Serializable {
         } else {
             JsfUtil.addErrorMessage(new MessageProvider().getValue("nothingToDelete"));
         }
-        recreateModel();
         getItems();
-        selectText = "";
-        selectedItemIndex = -1;
-        current = null;
-        this.prepareSelect();
-    }
-
-    public boolean isModifyControlDisable() {
-        return modifyControlDisable;
-    }
-
-    public void setModifyControlDisable(boolean modifyControlDisable) {
-        this.modifyControlDisable = modifyControlDisable;
-    }
-
-    public boolean isSelectControlDisable() {
-        return selectControlDisable;
-    }
-
-    public void setSelectControlDisable(boolean selectControlDisable) {
-        this.selectControlDisable = selectControlDisable;
     }
 
     public String getSelectText() {
@@ -238,17 +157,22 @@ public final class VtmController  implements Serializable {
 
     public void setSelectText(String selectText) {
         this.selectText = selectText;
-        searchItems();
     }
 
-    public void prepareSelectControlDisable() {
-        selectControlDisable = true;
-        modifyControlDisable = false;
+    public VtmFacade getEjbFacade() {
+        return ejbFacade;
     }
 
-    public void prepareModifyControlDisable() {
-        selectControlDisable = false;
-        modifyControlDisable = true;
+    public void setEjbFacade(VtmFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public SessionController getSessionController() {
+        return sessionController;
+    }
+
+    public void setSessionController(SessionController sessionController) {
+        this.sessionController = sessionController;
     }
 
     @FacesConverter(forClass = Vtm.class)
